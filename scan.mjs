@@ -1,48 +1,26 @@
-/*
-#  code by Alexander Thiele
-#  https://www.linkedin.com/in/thielander
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA#
-#
-#
-#
-#
-# yes -> node .\scan.mjs 89.166.35.0-89.166.35.255
-# no  -> node  .\scan.mjs 089.166.035.0-089.166.035.255
-#
-
-
-        \|||/
-        (o o)
-,~~~ooO~~(_)~~~~~~~~~,
-|                    |
-|    Web Scanner     |
-|     A.Thiele       |
-'~~~~~~~~~~~~~~ooO~~~'
-       |__|__|
-        || ||
-       ooO Ooo
-*/
 import axios from 'axios';
 import { AbortController } from 'abort-controller';
 import wordsToFind from './keywords.js';
 import fs from 'fs';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
-// Extract the IP range from the command line argument
-const [_, __, ipRange] = process.argv;
-const [startIP, endIP] = ipRange.split('-');
+const argv = yargs(hideBin(process.argv))
+  .option('ip', {
+    alias: 'i',
+    type: 'string',
+    description: 'Specify the IP range'
+  })
+  .option('mc', {
+    alias: 'm',
+    type: 'number',
+    default: 10,
+    description: 'Specify the maximum connections'
+  })
+  .help()
+  .argv;
+
+const [startIP, endIP] = argv.ip.split('-');
 
 const startParts = startIP.split('.');
 const startBaseIP = startParts.slice(0, 3).join('.');
@@ -71,10 +49,10 @@ const fetchAndScan = async ip => {
   const controller = new AbortController();
   const timeout = setTimeout(() => {
     controller.abort();
-  }, 2000); // set a 2-second timeout
+  }, 5000); // set a  timeout
 
   try {
-    const response = await axios.get(`http://${ip}`, { timeout: 2000 });
+    const response = await axios.get(`http://${ip}`, { timeout: 5000 });
     const data = response.data;
 
     let foundMessage = '';
@@ -117,7 +95,7 @@ const fetchAndScan = async ip => {
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 (async () => {
-  const maxConnections = 10;
+  const maxConnections = argv.mc;
   const queue = [];
   const results = [];
 

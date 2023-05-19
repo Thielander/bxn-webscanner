@@ -5,6 +5,8 @@
   "main": "scan.mjs",
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "axios": "^1.4.0"
+    "axios": "^1.4.0",
+    "ping": "^0.4.4",
+    "yargs": "^17.7.2"
   }
 }
