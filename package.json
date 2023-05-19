@@ -1,0 +1,10 @@
+{
+  "name": "bxn-webscanner",
+  "version": "1.0.1",
+  "type": "module",
+  "main": "scan.mjs",
+  "dependencies": {
+    "abort-controller": "^3.0.0",
+    "axios": "^1.4.0"
+  }
+}
